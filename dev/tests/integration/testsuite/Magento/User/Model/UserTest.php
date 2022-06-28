@@ -154,6 +154,11 @@ class UserTest extends TestCase
         $this->_model->loadByUsername(TestFrameworkBootstrap::ADMIN_NAME);
         $extra = $this->_model->getExtra();
         $this->assertEquals($extra['test'], 'val');
+
+        $this->_model->loadByUsername(TestFrameworkBootstrap::ADMIN_NAME);
+        $this->_model->saveExtra(null);
+        $this->_model->loadByUsername(TestFrameworkBootstrap::ADMIN_NAME);
+        $this->assertEquals($this->_model->getExtra(), null);
     }
 
     /**
@@ -572,7 +577,7 @@ class UserTest extends TestCase
 
         $this->expectExceptionMessage(
             'The account sign-in was incorrect or your account is disabled temporarily. '
-            . 'Please wait and try again later.'
+                . 'Please wait and try again later.'
         );
     }
 

@@ -205,7 +205,10 @@ class User extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      */
     protected function _afterSave(AbstractModel $user)
     {
-        $user->setExtra($this->getSerializer()->unserialize($user->getExtra()));
+        if (is_string($user->getExtra())) {
+            $user->setExtra($this->getSerializer()->unserialize($user->getExtra()));
+        }
+
         if ($user->hasRoleId()) {
             $this->_clearUserRoles($user);
             $this->_createUserRole($user->getRoleId(), $user);

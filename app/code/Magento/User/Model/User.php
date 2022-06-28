@@ -26,7 +26,7 @@ use Magento\Framework\App\DeploymentConfig;
  * @method \Magento\User\Model\User setLognum(int $value)
  * @method int getReloadAclFlag()
  * @method \Magento\User\Model\User setReloadAclFlag(int $value)
- * @method string getExtra()
+ * @method string|null getExtra()
  * @method \Magento\User\Model\User setExtra(string $value)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
@@ -281,9 +281,11 @@ class User extends AbstractModel implements StorageInterface, UserInterface
      */
     public function beforeSave()
     {
-        $data = [
-            'extra' => $this->serializer->serialize($this->getExtra()),
-        ];
+        $data = [];
+
+        if (!empty($this->getExtra())) {
+            $data['extra'] = $this->serializer->serialize($this->getExtra());
+        }
 
         if ($this->_willSavePassword()) {
             $data['password'] = $this->_getEncodedPassword($this->getPassword());
@@ -624,7 +626,7 @@ class User extends AbstractModel implements StorageInterface, UserInterface
                 throw new AuthenticationException(
                     __(
                         'The account sign-in was incorrect or your account is disabled temporarily. '
-                        . 'Please wait and try again later.'
+                            . 'Please wait and try again later.'
                     )
                 );
             }
